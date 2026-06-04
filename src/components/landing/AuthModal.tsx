@@ -153,22 +153,20 @@ export default memo(function AuthModal() {
                 <button
                   type="button"
                   onClick={() => openAuthModal("login")}
-                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer ${
-                    mode === "login"
-                      ? "bg-white/10 text-white"
-                      : "text-neutral-400 hover:text-white"
-                  }`}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer ${mode === "login"
+                    ? "bg-white/10 text-white"
+                    : "text-neutral-400 hover:text-white"
+                    }`}
                 >
                   Log in
                 </button>
                 <button
                   type="button"
                   onClick={() => openAuthModal("signup")}
-                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer ${
-                    mode === "signup"
-                      ? "bg-white/10 text-white"
-                      : "text-neutral-400 hover:text-white"
-                  }`}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer ${mode === "signup"
+                    ? "bg-white/10 text-white"
+                    : "text-neutral-400 hover:text-white"
+                    }`}
                 >
                   Sign up
                 </button>

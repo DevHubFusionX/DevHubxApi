@@ -87,11 +87,20 @@ export default memo(function Navbar() {
           </a>
 
           <a
-            href="#blog"
+            href="#changelog"
             onMouseEnter={() => setActiveMenu(null)}
             className="text-sm font-medium text-neutral-400 hover:text-white transition-colors duration-200 py-6"
           >
-            Blog
+            Changelog
+          </a>
+
+          <a
+            href="#status"
+            onMouseEnter={() => setActiveMenu(null)}
+            className="text-sm font-medium text-neutral-400 hover:text-white transition-colors duration-200 py-6 flex items-center gap-1.5"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-green shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
+            Status
           </a>
 
           {/* Absolute Dropdowns */}
@@ -102,7 +111,7 @@ export default memo(function Navbar() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 rounded-2xl border border-white/10 glass-dropdown backdrop-blur-2xl shadow-2xl p-6 ${activeMenu === "apis" ? "w-[850px]" : "w-[820px]"
+                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 rounded-2xl border border-white/10 glass-dropdown backdrop-blur-2xl shadow-2xl p-6 ${activeMenu === "apis" ? "w-[850px]" : "w-[580px]"
                   }`}
               >
                 {activeMenu === "apis" && <ApisDropdown />}

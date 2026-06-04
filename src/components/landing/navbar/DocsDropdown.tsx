@@ -2,10 +2,7 @@
 
 import React, { memo, useState } from "react";
 
-type Language = "curl" | "node" | "python";
-
 export default memo(function DocsDropdown() {
-  const [selectedLang, setSelectedLang] = useState<Language>("curl");
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
   const copyToClipboard = (text: string, label: string) => {
@@ -14,24 +11,12 @@ export default memo(function DocsDropdown() {
     setTimeout(() => setCopiedText(null), 2000);
   };
 
-  const snippets = {
-    curl: `curl -X POST https://api.devhubx.com/v1/verify/nin \\
-  -H "Authorization: Bearer YOUR_KEY" \\
-  -d '{"nin": "123456789"}'`,
-    node: `import { Devhub } from "@devhubx/sdk";
-const sdk = new Devhub({ apiKey: "YOUR_KEY" });
-const res = await sdk.verify.nin("123456789");`,
-    python: `from devhubx import Devhub
-client = Devhub(api_key="YOUR_KEY")
-res = client.verify.nin("123456789")`
-  };
-
   return (
     <div className="flex flex-col text-left font-sans select-none">
       <div className="grid grid-cols-12 gap-8">
 
         {/* Left column — Getting Started */}
-        <div className="col-span-4 flex flex-col gap-3">
+        <div className="col-span-6 flex flex-col gap-3">
           <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block mb-1 px-1">
             Getting Started
           </span>
@@ -101,7 +86,7 @@ res = client.verify.nin("123456789")`
         </div>
 
         {/* Center column — SDKs & Tools */}
-        <div className="col-span-4 border-l border-white/10 pl-6 flex flex-col gap-3">
+        <div className="col-span-6 border-l border-white/10 pl-6 flex flex-col gap-3">
           <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block mb-1 px-1">
             SDKs &amp; Tools
           </span>
@@ -202,97 +187,6 @@ res = client.verify.nin("123456789")`
                 </svg>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Right column — Interactive Sandbox */}
-        <div className="col-span-4 border-l border-white/10 pl-6 flex flex-col gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block mb-1 px-1">
-            Sandbox Playground
-          </span>
-
-          <div className="bg-neutral-900/60 rounded-xl p-4 border border-white/5 flex flex-col gap-4 relative overflow-hidden">
-            {/* Tiny tab switcher for languages inside the playground */}
-            <div className="flex items-center justify-between border-b border-white/5 pb-2">
-              <div className="flex gap-2">
-                {(["curl", "node", "python"] as Language[]).map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => setSelectedLang(lang)}
-                    className={`px-2 py-1 rounded text-[10px] font-mono transition-all duration-200 ${
-                      selectedLang === lang 
-                        ? "bg-brand-green/10 text-brand-green font-bold border border-brand-green/20" 
-                        : "text-neutral-400 hover:text-neutral-200 border border-transparent"
-                    }`}
-                  >
-                    {lang === "curl" ? "cURL" : lang === "node" ? "Node" : "Python"}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => copyToClipboard(snippets[selectedLang], selectedLang)}
-                className="text-[10px] text-neutral-500 hover:text-neutral-300 font-mono transition-colors duration-200 flex items-center gap-1"
-              >
-                {copiedText === selectedLang ? (
-                  <span className="text-brand-green font-bold">Copied!</span>
-                ) : (
-                  <>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                    </svg>
-                    Copy
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Simulated interactive IDE card */}
-            <div className="bg-neutral-950 rounded-lg p-3 border border-white/5 font-mono text-[9px] leading-relaxed min-h-[92px] max-h-[92px] overflow-auto flex flex-col justify-between">
-              <pre className="text-neutral-300 whitespace-pre-wrap selection:bg-brand-green/20">
-                {selectedLang === "curl" && (
-                  <>
-                    <span className="text-neutral-500">curl -X POST</span> <span className="text-brand-green">https://api.devhubx.com/v1/verify/nin</span> \<br />
-                    {"  "}-H <span className="text-amber-400">&quot;Authorization: Bearer YOUR_KEY&quot;</span> \<br />
-                    {"  "}-d <span className="text-purple-400">&apos;{"{"}&quot;nin&quot;: &quot;123456789&quot;{"}"}&apos;</span>
-                  </>
-                )}
-                {selectedLang === "node" && (
-                  <>
-                    <span className="text-purple-400">import</span> {"{"} <span className="text-blue-400">Devhub</span> {"}"} <span className="text-purple-400">from</span> <span className="text-amber-400">&quot;@devhubx/sdk&quot;</span>;<br />
-                    <span className="text-purple-400">const</span> sdk = <span className="text-purple-400">new</span> <span className="text-emerald-400">Devhub</span>({"{"} apiKey: <span className="text-amber-400">&quot;YOUR_KEY&quot;</span> {"}"});<br />
-                    <span className="text-purple-400">const</span> res = <span className="text-purple-400">await</span> sdk.verify.nin(<span className="text-amber-400">&quot;123456789&quot;</span>);
-                  </>
-                )}
-                {selectedLang === "python" && (
-                  <>
-                    <span className="text-purple-400">from</span> devhubx <span className="text-purple-400">import</span> Devhub<br />
-                    client = Devhub(api_key=<span className="text-amber-400">&quot;YOUR_KEY&quot;</span>)<br />
-                    res = client.verify.nin(<span className="text-amber-400">&quot;123456789&quot;</span>)
-                  </>
-                )}
-              </pre>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                Interactive API Explorer
-                <span className="bg-brand-green/10 text-brand-green text-[8px] font-mono font-bold px-1 py-0.5 rounded border border-brand-green/20">LIVE</span>
-              </h4>
-              <p className="text-[10px] text-neutral-400 leading-relaxed">
-                Test and execute live queries to mock endpoints directly inside the developer dashboard portal.
-              </p>
-            </div>
-
-            <a
-              href="#docs"
-              className="inline-flex items-center justify-center gap-2 text-xs font-bold text-neutral-950 bg-brand-green hover:bg-emerald-400 rounded-lg px-3 py-2 transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-emerald-500/10 active:translate-y-0"
-            >
-              Launch API Sandbox
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
           </div>
         </div>
 
