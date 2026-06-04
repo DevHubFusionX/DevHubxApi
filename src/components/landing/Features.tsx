@@ -1,143 +1,205 @@
 "use client";
 
 import React, { memo, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FadeUp } from "@/lib/motion";
 import DotWaveBackground from "@/components/landing/DotWaveBackground";
 
-type NodeItem = {
-  id: number;
-  title: string;
-  short: string;
-  description: string;
-  status: string;
-  latency: string;
-  reliability: string;
-  x: number; // Percent position in SVG
-  y: number;
-  icon: React.ReactNode;
+// --- Sub-component: Raw to Unified Schema normalizer ---
+const RawVSUnified = () => {
+  return (
+    <div className="flex flex-col sm:flex-row gap-4 h-full items-stretch w-full">
+      {/* Raw APIs Input */}
+      <div className="flex-1 rounded-xl bg-black/60 border border-white/5 p-4 flex flex-col justify-between font-mono text-[10px] overflow-hidden text-neutral-500 min-h-[160px]">
+        <div>
+          <div className="text-neutral-400 font-bold mb-2 pb-1 border-b border-white/5 flex items-center justify-between">
+            <span>NIMC_Lagos_API</span>
+            <span className="text-red-400/85 font-sans font-medium text-[9px] bg-red-500/10 px-1.5 py-0.5 rounded">Unstructured</span>
+          </div>
+          <p className="text-red-300/60">{"<Response>"}</p>
+          <p className="pl-3">{"<NIN_Data status=\"01\">"}</p>
+          <p className="pl-6 text-neutral-600">{"<firstname>Adebayo</firstname>"}</p>
+          <p className="pl-6 text-neutral-600">{"<surname>Onajobi</surname>"}</p>
+          <p className="pl-3">{"</NIN_Data>"}</p>
+          <p className="text-red-300/60">{"</Response>"}</p>
+        </div>
+        <div className="pt-3 mt-3 border-t border-white/5">
+          <div className="text-neutral-400 font-bold mb-1">NIBSS_BVN_Endpoint</div>
+          <p className="text-neutral-600 leading-relaxed font-sans text-[9px]">{"{ \"bvn_status\": \"active\", \"detail\": { \"first_name\": \"Adebayo\" } }"}</p>
+        </div>
+      </div>
+
+      {/* Normalization Gate */}
+      <div className="flex sm:flex-col items-center justify-center gap-2 text-brand-green shrink-0">
+        <svg className="w-5 h-5 rotate-90 sm:rotate-0 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+        </svg>
+        <span className="text-[9px] uppercase font-mono tracking-wider font-bold">Gateway</span>
+      </div>
+
+      {/* Unified Output */}
+      <div className="flex-1 rounded-xl bg-neutral-900 border border-white/10 p-4 font-mono text-[10px] overflow-hidden text-neutral-300 relative min-h-[160px]">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-brand-green/5 rounded-full blur-xl pointer-events-none" />
+        <div className="text-brand-green font-bold mb-2 pb-1 border-b border-white/5 flex items-center justify-between">
+          <span>DevhubxAPI Response</span>
+          <span className="text-brand-green bg-brand-green/10 px-1.5 py-0.5 rounded font-sans text-[9px]">200 OK</span>
+        </div>
+        <p className="text-blue-400">{"{"}</p>
+        <p className="pl-3"><span className="text-emerald-400">"status"</span>: <span className="text-amber-300">"success"</span>,</p>
+        <p className="pl-3"><span className="text-emerald-400">"data"</span>: <span className="text-blue-400">{"{"}</span></p>
+        <p className="pl-6"><span className="text-emerald-400">"firstName"</span>: <span className="text-amber-300">"Adebayo"</span>,</p>
+        <p className="pl-6"><span className="text-emerald-400">"lastName"</span>: <span className="text-amber-300">"Onajobi"</span></p>
+        <p className="pl-3"><span className="text-blue-400">{"}"}</span></p>
+        <p className="text-blue-400">{"}"}</p>
+      </div>
+    </div>
+  );
 };
 
-const nodesList: NodeItem[] = [
-  {
-    id: 0,
-    title: "Regional Identity Hub",
-    short: "Identity",
-    description: "Instant connections to local biometric, NIN, and BVN database endpoints with edge verification.",
-    status: "Active",
-    latency: "4.2ms",
-    reliability: "99.99%",
-    x: 20,
-    y: 25,
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-      </svg>
-    ),
-  },
-  {
-    id: 1,
-    title: "Mobile Payouts Engine",
-    short: "Payments",
-    description: "Direct routing to local carrier APIs, mobile money corridors, and instant bank disbursement channels.",
-    status: "Active",
-    latency: "2.8ms",
-    reliability: "99.98%",
-    x: 80,
-    y: 25,
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    id: 2,
-    title: "Distributed Edge Nodes",
-    short: "SLA / Infrastructure",
-    description: "Edge-distributed server nodes running in global centers for high availability and low latency routing.",
-    status: "Optimal",
-    latency: "1.1ms",
-    reliability: "99.999%",
-    x: 15,
-    y: 75,
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-    ),
-  },
-  {
-    id: 3,
-    title: "Isolated Sandbox Corridor",
-    short: "Staging Sandbox",
-    description: "Simulate failure modes, synthetic response latency, and webhook retries before deploying code.",
-    status: "Staging",
-    latency: "8.5ms",
-    reliability: "100.0%",
-    x: 85,
-    y: 75,
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-      </svg>
-    ),
-  },
-  {
-    id: 4,
-    title: "Granular Telemetry Stream",
-    short: "Telemetry Analytics",
-    description: "High-resolution tracking of response payloads, error rate distributions, and API performance telemetry.",
-    status: "Streaming",
-    latency: "Real-time",
-    reliability: "99.99%",
-    x: 50,
-    y: 12,
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2zm9-7h2a2 2 0 012 2v5a2 2 0 01-2 2h-2a2 2 0 01-2-2v-5a2 2 0 012-2z" />
-      </svg>
-    ),
-  },
-  {
-    id: 5,
-    title: "OpenAPI Documentation Nodes",
-    short: "Documentation & SDKs",
-    description: "Dynamic developer playgrounds, OpenAPI standard schemas, and SDK wrappers for all primary runtimes.",
-    status: "Updated",
-    latency: "Static",
-    reliability: "100.0%",
-    x: 50,
-    y: 88,
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
-  },
-];
+// --- Sub-component: Regional Edge Node Latency ---
+const EdgeNodeStatuses = () => {
+  const [nodes, setNodes] = useState([
+    { city: "Lagos Hub", code: "LOS", ping: "2.4ms" },
+    { city: "Nairobi Edge", code: "NBO", ping: "3.1ms" },
+    { city: "Joburg Hub", code: "JNB", ping: "4.5ms" },
+    { city: "London Gate", code: "LHR", ping: "0.8ms" },
+  ]);
 
-export default memo(function Features() {
-  const [activeNode, setActiveNode] = useState<number>(0);
-  const [pulseKey, setPulseKey] = useState(0);
-
-  // Trigger automated light visual pulses along connection lines
   useEffect(() => {
-    const timer = setInterval(() => {
-      setPulseKey((prev) => prev + 1);
-    }, 4000);
-    return () => clearInterval(timer);
+    const interval = setInterval(() => {
+      setNodes(prev =>
+        prev.map(node => {
+          const current = parseFloat(node.ping);
+          const next = (current + (Math.random() * 0.4 - 0.2));
+          const bounded = Math.max(0.5, Math.min(10, next));
+          return {
+            ...node,
+            ping: bounded.toFixed(1) + "ms",
+          };
+        })
+      );
+    }, 1500);
+    return () => clearInterval(interval);
   }, []);
 
   return (
+    <div className="flex flex-col gap-3 font-sans w-full">
+      {nodes.map(node => (
+        <div key={node.code} className="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 hover:border-white/10 transition-colors duration-200">
+          <div className="flex items-center gap-2.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
+            <div className="text-left">
+              <div className="text-xs font-bold text-white leading-none">{node.city}</div>
+              <div className="text-[10px] text-neutral-500 font-mono mt-1">{node.code} Node</div>
+            </div>
+          </div>
+          <span className="text-xs font-mono font-bold text-brand-green">{node.ping}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- Sub-component: Sandbox failure simulator ---
+const SandboxSimulator = () => {
+  const [failureRate, setFailureRate] = useState(0);
+  const [latency, setLatency] = useState(40);
+
+  return (
+    <div className="flex flex-col gap-4 w-full text-left">
+      <div className="p-3.5 rounded-xl bg-white/2 border border-white/5">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold text-neutral-400">Simulate Latency</span>
+          <span className="text-xs font-bold font-mono text-brand-green">{latency}ms</span>
+        </div>
+        <input
+          type="range"
+          min="10"
+          max="500"
+          value={latency}
+          onChange={(e) => setLatency(parseInt(e.target.value))}
+          className="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-brand-green"
+        />
+      </div>
+
+      <div className="p-3.5 rounded-xl bg-white/2 border border-white/5">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold text-neutral-400">Failure Rate</span>
+          <span className="text-xs font-bold font-mono text-brand-green">{failureRate}%</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="10"
+          value={failureRate}
+          onChange={(e) => setFailureRate(parseInt(e.target.value))}
+          className="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-brand-green"
+        />
+      </div>
+
+      <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-neutral-900 border border-white/5 text-[10px] font-mono text-neutral-500">
+        <span>Result State:</span>
+        <span className={failureRate > 50 ? "text-red-400 font-bold" : "text-brand-green font-bold"}>
+          {failureRate > 50 ? "500 Internal Error" : "200 OK"}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// --- Sub-component: Real-time Telemetry ---
+const TelemetryGraph = () => {
+  return (
+    <div className="w-full h-full min-h-[160px] relative flex flex-col justify-between">
+      {/* Wave chart SVG */}
+      <svg className="w-full h-28 overflow-visible mt-2" viewBox="0 0 300 80">
+        <defs>
+          <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+        {/* Glow region */}
+        <path
+          d="M0 70 Q 30 25, 60 45 T 120 20 T 180 55 T 240 30 T 300 40 L 300 80 L 0 80 Z"
+          fill="url(#chartGlow)"
+        />
+        {/* Chart line */}
+        <path
+          d="M0 70 Q 30 25, 60 45 T 120 20 T 180 55 T 240 30 T 300 40"
+          fill="none"
+          stroke="#10b981"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="opacity-90"
+        />
+        {/* Glowing node point */}
+        <circle cx="120" cy="20" r="4" fill="#10b981" />
+        <circle cx="120" cy="20" r="9" fill="none" stroke="#10b981" strokeWidth="1" className="animate-ping" />
+      </svg>
+
+      <div className="flex items-center justify-between border-t border-white/5 pt-3 mt-4 text-[10px] text-neutral-500 font-mono">
+        <span>Live Stream</span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
+          Gateway Telemetry: 284 rps
+        </span>
+        <span>100% telemetry</span>
+      </div>
+    </div>
+  );
+};
+
+export default memo(function Features() {
+  return (
     <section id="features" className="bg-black py-24 sm:py-32 select-none border-b border-white/5 relative overflow-hidden">
-      {/* Dynamic Animated wave background */}
+      {/* Wave Dot Animation background */}
       <DotWaveBackground />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         {/* Header Block */}
-        <FadeUp className="text-center max-w-3xl mx-auto mb-20">
+        <FadeUp className="text-center max-w-3xl mx-auto mb-16">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-green">
             Gateway Infrastructure
           </span>
@@ -145,153 +207,67 @@ export default memo(function Features() {
             Unified Node Architecture
           </h2>
           <p className="text-base sm:text-lg text-neutral-400 leading-relaxed">
-            All regional payment, authentication, and compliance queries flow through a single edge gateway. Hover nodes below to inspect network connections.
+            Eliminate vendor spaghetti. All regional payment, authentication, and logistics services flow through a robust, low-latency edge network.
           </p>
         </FadeUp>
 
-        {/* Minimal Node Split Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        {/* Bento Grid Redesign */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch max-w-7xl mx-auto">
           
-          {/* Left Side: Interactive SVG Node Graph */}
-          <div className="lg:col-span-7 flex justify-center items-center relative aspect-square max-w-[500px] mx-auto w-full border border-white/5 rounded-2xl bg-neutral-950/40 backdrop-blur-md p-6">
-            
-            {/* Base SVG for Connecting Lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
-                  <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
-                </linearGradient>
-              </defs>
-
-              {/* Connecting paths from each satellite node to center gateway hub */}
-              {nodesList.map((node) => {
-                const isActive = activeNode === node.id;
-                return (
-                  <g key={`link-${node.id}`}>
-                    {/* Underlying static connector line */}
-                    <line
-                      x1={node.x}
-                      y1={node.y}
-                      x2={50}
-                      y2={50}
-                      stroke={isActive ? "rgba(16, 185, 129, 0.4)" : "rgba(255, 255, 255, 0.05)"}
-                      strokeWidth={isActive ? "1.5" : "1"}
-                      className="transition-colors duration-300"
-                    />
-
-                    {/* Glowing routing packet pulse */}
-                    <motion.circle
-                      key={`pulse-${node.id}-${pulseKey}`}
-                      r="1.2"
-                      fill="#10b981"
-                      className="shadow-sm"
-                      initial={{ cx: node.x, cy: node.y }}
-                      animate={{ cx: 50, cy: 50 }}
-                      transition={{
-                        duration: 1.5,
-                        delay: node.id * 0.25,
-                        ease: "easeInOut",
-                        repeat: Infinity,
-                        repeatDelay: 2
-                      }}
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-
-            {/* Central Gateway Node Hub */}
-            <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
-              <div className="relative flex items-center justify-center w-16 h-16 rounded-full border border-brand-green/30 bg-neutral-900 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
-                {/* Gateway pulse ripple ring */}
-                <span className="absolute inset-0 rounded-full border border-brand-green/40 animate-ping opacity-25" />
-                
-                {/* Logo emblem */}
-                <span className="text-white font-black text-sm tracking-tight">
-                  DH<span className="text-brand-green">x</span>
-                </span>
-              </div>
-              <span className="mt-2 text-[10px] uppercase font-mono tracking-widest text-neutral-500 font-bold">Edge Hub</span>
+          {/* Card 1: Raw vs Unified Schema Normalization (Double Column) */}
+          <div className="md:col-span-2 rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-md p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-white/10 hover:bg-neutral-900/50">
+            <div className="text-left mb-6">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green font-mono">Normalization</span>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mt-1 mb-2">Unified Schema Normalization</h3>
+              <p className="text-neutral-400 text-sm leading-relaxed max-w-xl">
+                One response contract. We handle auth token management, rate limit buffering, and structure variations across NIMC, NIBSS, and MTN into a single clean JSON endpoint.
+              </p>
             </div>
-
-            {/* Satellites */}
-            {nodesList.map((node) => {
-              const isActive = activeNode === node.id;
-              return (
-                <button
-                  key={node.id}
-                  onMouseEnter={() => setActiveNode(node.id)}
-                  onClick={() => setActiveNode(node.id)}
-                  className={`absolute z-20 p-3 rounded-xl border backdrop-blur-md transition-all duration-300 flex items-center justify-center cursor-pointer ${
-                    isActive
-                      ? "border-brand-green bg-neutral-900 text-brand-green shadow-[0_0_15px_rgba(16,185,129,0.1)] scale-110"
-                      : "border-white/5 bg-neutral-950/60 text-neutral-400 hover:border-white/20 hover:text-white"
-                  }`}
-                  style={{
-                    left: `${node.x}%`,
-                    top: `${node.y}%`,
-                    transform: "translate(-50%, -50%)"
-                  }}
-                >
-                  {node.icon}
-                </button>
-              );
-            })}
+            <div className="mt-auto">
+              <RawVSUnified />
+            </div>
           </div>
 
-          {/* Right Side: Minimal detail specifications */}
-          <div className="lg:col-span-5 text-left flex flex-col justify-center min-h-[300px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeNode}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="flex flex-col gap-6"
-              >
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green font-mono">
-                    Node Specs • 0{nodesList[activeNode].id}
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 mb-4 leading-tight">
-                    {nodesList[activeNode].title}
-                  </h3>
-                  <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-                    {nodesList[activeNode].description}
-                  </p>
-                </div>
+          {/* Card 2: Distributed Edge Nodes (Single Column) */}
+          <div className="md:col-span-1 rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-md p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-white/10 hover:bg-neutral-900/50">
+            <div className="text-left mb-6">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green font-mono">Multi-Cloud Routing</span>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mt-1 mb-2">Regional Edge Nodes</h3>
+              <p className="text-neutral-400 text-sm leading-relaxed">
+                Requests are auto-routed to co-located instances closest to local vendor centers for minimal latency.
+              </p>
+            </div>
+            <div className="mt-auto">
+              <EdgeNodeStatuses />
+            </div>
+          </div>
 
-                {/* Micro specs table grid */}
-                <div className="grid grid-cols-3 gap-4 border-t border-white/5 pt-6 mt-2">
-                  <div>
-                    <span className="text-[9px] uppercase tracking-wider text-neutral-600 font-mono font-bold block">Status</span>
-                    <span className="text-sm font-semibold text-white mt-1 flex items-center gap-1.5">
-                      <span className={`w-1.5 h-1.5 rounded-full ${
-                        nodesList[activeNode].status === "Active" || nodesList[activeNode].status === "Optimal"
-                          ? "bg-brand-green animate-pulse"
-                          : "bg-cyan-400"
-                      }`} />
-                      {nodesList[activeNode].status}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] uppercase tracking-wider text-neutral-600 font-mono font-bold block">Avg. Ping</span>
-                    <span className="text-sm font-semibold text-emerald-400 mt-1 font-mono">
-                      {nodesList[activeNode].latency}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] uppercase tracking-wider text-neutral-600 font-mono font-bold block">Reliability</span>
-                    <span className="text-sm font-semibold text-white mt-1 font-mono">
-                      {nodesList[activeNode].reliability}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+          {/* Card 3: Isolated Sandbox Corridor (Single Column) */}
+          <div className="md:col-span-1 rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-md p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-white/10 hover:bg-neutral-900/50">
+            <div className="text-left mb-6">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green font-mono">Staging Corridor</span>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mt-1 mb-2">Staging Sandbox</h3>
+              <p className="text-neutral-400 text-sm leading-relaxed">
+                Simulate arbitrary response delays, webhook retry codes, and rate-limiting blocks in absolute safety.
+              </p>
+            </div>
+            <div className="mt-auto">
+              <SandboxSimulator />
+            </div>
+          </div>
+
+          {/* Card 4: Live Telemetry Stream (Double Column) */}
+          <div className="md:col-span-2 rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-md p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-white/10 hover:bg-neutral-900/50">
+            <div className="text-left mb-6">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green font-mono">Granular Metrics</span>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mt-1 mb-2">Granular Telemetry Stream</h3>
+              <p className="text-neutral-400 text-sm leading-relaxed max-w-xl">
+                Access full logs of payload histories, response codes, and roundtrip times directly in your developer dashboard.
+              </p>
+            </div>
+            <div className="mt-auto w-full">
+              <TelemetryGraph />
+            </div>
           </div>
 
         </div>
