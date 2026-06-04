@@ -41,7 +41,70 @@ export default memo(function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
 
-  const proPrice = isAnnual ? 24 : 29;
+  const plans = [
+    {
+      name: "Free",
+      tagline: "Sandbox",
+      price: 0,
+      volume: "1,000 calls/mo",
+      buttonText: "Get started free",
+      isHero: false,
+      badge: "Sandbox",
+      features: [
+        "1,000 API calls/month",
+        "Sandbox environment",
+        "Community Discord",
+        "Identity APIs (limited)",
+        "Webhooks",
+      ],
+    },
+    {
+      name: "Pro",
+      tagline: "Growing teams",
+      price: isAnnual ? 25 : 29,
+      volume: "100K calls/mo",
+      buttonText: "Upgrade to Pro",
+      isHero: true,
+      badge: "Most popular",
+      features: [
+        "100K API calls/month",
+        "All identity & finance APIs",
+        "<10ms latency SLA",
+        "Webhooks + delivery log",
+        "Email support (1hr)",
+      ],
+    },
+    {
+      name: "Growth",
+      tagline: "Scaling fintechs",
+      price: isAnnual ? 84 : 99,
+      volume: "500K calls/mo",
+      buttonText: "Start Growth plan",
+      isHero: false,
+      features: [
+        "500K API calls/month",
+        "All Pro features",
+        "Team seats (up to 10)",
+        "Usage analytics dashboard",
+        "Priority support (30min)",
+      ],
+    },
+    {
+      name: "Enterprise",
+      tagline: "Unlimited scale",
+      price: "Custom",
+      volume: "Unlimited calls",
+      buttonText: "Contact sales",
+      isHero: false,
+      features: [
+        "Unlimited API calls",
+        "Dedicated edge nodes",
+        "SOC2 compliance reports",
+        "24/7 phone & Slack support",
+        "Custom SLA & audit logs",
+      ],
+    },
+  ];
 
   return (
     <section
@@ -92,157 +155,119 @@ export default memo(function Pricing() {
               }`}
             >
               Annual
-              <span className="text-[9px] font-bold bg-brand-green text-neutral-950 px-1.5 py-0.5 rounded-full">
-                -15%
+              <span className="text-[10px] font-bold bg-brand-green text-neutral-950 px-2 py-0.5 rounded-full">
+                Save 15% annually
               </span>
             </button>
           </div>
         </FadeUp>
 
-        {/* 3-Tier Grid */}
+        {/* 4-Tier Grid */}
         <StaggerContainer
           stagger={0.1}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch max-w-7xl mx-auto"
         >
+          {plans.map((plan) => {
+            const cardContent = (
+              <div className="rounded-2xl bg-neutral-950 h-full p-8 flex flex-col justify-between relative overflow-hidden">
+                {plan.isHero && (
+                  <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-brand-green/8 rounded-full blur-[80px] pointer-events-none" />
+                )}
 
-          {/* Free Tier */}
-          <StaggerItem className="rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-sm p-8 flex flex-col justify-between transition-all duration-300 hover:border-white/10">
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">Free</h3>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 bg-neutral-800 px-2.5 py-1 rounded-full">
-                  Sandbox
-                </span>
-              </div>
+                <div className="relative z-10 animate-fade-up-word">
+                  <div className="flex items-center justify-between mb-6 gap-2">
+                    <div>
+                      <h3 className="text-lg font-bold text-white">{plan.name}</h3>
+                      {plan.tagline && (
+                        <p className="text-xs text-neutral-400 mt-1">{plan.tagline}</p>
+                      )}
+                    </div>
+                    {plan.badge && (
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                        plan.isHero
+                          ? "text-neutral-950 bg-brand-green shadow-sm shadow-emerald-500/20"
+                          : "text-neutral-400 bg-neutral-800"
+                      }`}>
+                        {plan.badge}
+                      </span>
+                    )}
+                  </div>
 
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-extrabold text-white tracking-tight">$0</span>
-              </div>
-              <p className="text-neutral-500 text-sm mb-8">
-                1,000 calls/month &bull; Forever free
-              </p>
+                  <div className="flex items-baseline gap-1 mb-2">
+                    {typeof plan.price === "number" ? (
+                      <span className="text-5xl font-extrabold text-white tracking-tight">
+                        <AnimatedPrice value={plan.price} />
+                      </span>
+                    ) : (
+                      <span className="text-5xl font-extrabold text-white tracking-tight">
+                        {plan.price}
+                      </span>
+                    )}
+                    {typeof plan.price === "number" && (
+                      <span className="text-neutral-500 text-sm font-medium">/mo</span>
+                    )}
+                  </div>
+                  <p className="text-neutral-500 text-sm mb-8">
+                    {plan.volume} &bull; {plan.name === "Free" ? "Forever free" : plan.name === "Enterprise" ? "Volume contracts" : isAnnual ? "Billed annually" : "Cancel anytime"}
+                  </p>
 
-              <div className="border-t border-white/5 pt-6">
-                <ul className="flex flex-col gap-3.5">
-                  {[
-                    "1,000 API calls per month",
-                    "Sandbox environment access",
-                    "Community Discord support",
-                    "Standard edge routing",
-                    "Basic request logging",
-                  ].map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-neutral-400">
-                      <svg className="w-4 h-4 text-neutral-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <button className="w-full mt-8 py-3.5 rounded-xl text-sm font-semibold text-neutral-300 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-200 cursor-pointer">
-              Get started free
-            </button>
-          </StaggerItem>
-
-          {/* Pro Tier (Hero Card) */}
-          <StaggerItem className="rounded-2xl p-px bg-gradient-to-b from-brand-green/40 via-brand-green/10 to-transparent lg:-translate-y-4">
-            <div className="rounded-2xl bg-neutral-950 h-full p-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-brand-green/8 rounded-full blur-[80px] pointer-events-none" />
-
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-white">Pro</h3>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-950 bg-brand-green px-2.5 py-1 rounded-full shadow-sm shadow-emerald-500/20">
-                    Most popular
-                  </span>
+                  <div className="border-t border-white/5 pt-6">
+                    <ul className="flex flex-col gap-3.5">
+                      {plan.features.map((feat, i) => (
+                        <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.isHero ? "text-neutral-300" : "text-neutral-400"}`}>
+                          <svg className={`w-4 h-4 shrink-0 mt-0.5 ${plan.isHero ? "text-brand-green" : "text-neutral-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
 
-                <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-5xl font-extrabold text-white tracking-tight">
-                    <AnimatedPrice value={proPrice} />
-                  </span>
-                  <span className="text-neutral-500 text-sm font-medium">/mo</span>
-                </div>
-                <p className="text-neutral-500 text-sm mb-8">
-                  100K calls/month &bull; {isAnnual ? "Billed $288/yr" : "Cancel anytime"}
-                </p>
-
-                <div className="border-t border-white/5 pt-6">
-                  <ul className="flex flex-col gap-3.5">
-                    {[
-                      "100,000 API calls per month",
-                      "All Identity, Finance & Address APIs",
-                      "Guaranteed < 10ms latency SLA",
-                      "Priority email support (1hr)",
-                      "Webhook integrations",
-                      "Usage analytics dashboard",
-                      "Custom rate limiting rules",
-                    ].map((feat, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-sm text-neutral-300">
-                        <svg className="w-4 h-4 text-brand-green shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <button className={`w-full mt-8 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  plan.isHero
+                    ? "text-neutral-950 bg-brand-green hover:bg-emerald-400 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:-translate-y-0.5 font-bold"
+                    : "text-neutral-300 border border-white/10 hover:border-white/20 hover:bg-white/5"
+                }`}>
+                  {plan.buttonText}
+                </button>
               </div>
+            );
 
-              <button className="relative z-10 w-full mt-8 py-3.5 rounded-xl text-sm font-bold text-neutral-950 bg-brand-green hover:bg-emerald-400 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
-                Upgrade to Pro
-              </button>
-            </div>
-          </StaggerItem>
+            if (plan.isHero) {
+              return (
+                <StaggerItem key={plan.name} className="rounded-2xl p-px bg-linear-to-b from-brand-green/40 via-brand-green/10 to-transparent lg:-translate-y-4">
+                  {cardContent}
+                </StaggerItem>
+              );
+            }
 
-          {/* Enterprise Tier */}
-          <StaggerItem className="rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-sm p-8 flex flex-col justify-between transition-all duration-300 hover:border-white/10">
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">Enterprise</h3>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 bg-neutral-800 px-2.5 py-1 rounded-full">
-                  Custom
-                </span>
-              </div>
-
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-extrabold text-white tracking-tight">Custom</span>
-              </div>
-              <p className="text-neutral-500 text-sm mb-8">
-                Unlimited calls &bull; Volume contracts
-              </p>
-
-              <div className="border-t border-white/5 pt-6">
-                <ul className="flex flex-col gap-3.5">
-                  {[
-                    "Unlimited API requests",
-                    "Dedicated edge infrastructure",
-                    "Custom regional endpoints",
-                    "SOC2 compliance reporting",
-                    "24/7 phone & Slack support",
-                    "Dedicated solutions architect",
-                    "Custom SLA & uptime guarantees",
-                  ].map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-neutral-400">
-                      <svg className="w-4 h-4 text-neutral-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <button className="w-full mt-8 py-3.5 rounded-xl text-sm font-semibold text-neutral-300 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-200 cursor-pointer">
-              Contact sales
-            </button>
-          </StaggerItem>
-
+            return (
+              <StaggerItem key={plan.name} className="rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-sm flex flex-col justify-between transition-all duration-300 hover:border-white/10">
+                {cardContent}
+              </StaggerItem>
+            );
+          })}
         </StaggerContainer>
+
+        {/* Overage pricing note */}
+        <FadeUp delay={0.4}>
+          <div className="max-w-6xl mx-auto mt-12 p-6 rounded-2xl border border-white/5 bg-neutral-900/20 backdrop-blur-sm text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1">
+              <p className="text-neutral-300 text-sm leading-relaxed">
+                <span className="text-brand-green font-semibold">Overage pricing</span> is tiered by endpoint category — identity APIs (NIN, BVN, Face Match) overage at <span className="text-white font-semibold font-mono">$0.015/call</span>, finance APIs at <span className="text-white font-semibold font-mono">$0.008/call</span>, address & logistics at <span className="text-white font-semibold font-mono">$0.003/call</span>. We never cut off live traffic — overages are billed at month end.
+              </p>
+            </div>
+            <a
+              href="#rate-card"
+              className="shrink-0 text-sm font-semibold text-brand-green hover:text-emerald-400 hover:underline transition-all flex items-center gap-1"
+            >
+              See full rate card
+              <span>→</span>
+            </a>
+          </div>
+        </FadeUp>
 
         {/* Feature Comparison Toggle */}
         <div className="max-w-6xl mx-auto mt-16">
@@ -262,7 +287,7 @@ export default memo(function Pricing() {
           {/* Comparison Table */}
           <div
             className={`overflow-hidden transition-all duration-500 ease-in-out ${
-              showComparison ? "max-h-[600px] opacity-100 mt-10" : "max-h-0 opacity-0 mt-0"
+              showComparison ? "max-h-[700px] opacity-100 mt-10" : "max-h-0 opacity-0 mt-0"
             }`}
           >
             <div className="rounded-xl border border-white/5 bg-neutral-900/30 overflow-hidden">
@@ -271,25 +296,28 @@ export default memo(function Pricing() {
                   <tr className="border-b border-white/5">
                     <th className="py-4 px-6 text-neutral-500 font-semibold text-xs uppercase tracking-wider">Feature</th>
                     <th className="py-4 px-6 text-neutral-500 font-semibold text-xs uppercase tracking-wider text-center">Free</th>
-                    <th className="py-4 px-6 text-brand-green font-semibold text-xs uppercase tracking-wider text-center">Pro</th>
+                    <th className="py-4 px-6 text-neutral-500 font-semibold text-xs uppercase tracking-wider text-center">Pro</th>
+                    <th className="py-4 px-6 text-brand-green font-semibold text-xs uppercase tracking-wider text-center">Growth</th>
                     <th className="py-4 px-6 text-neutral-500 font-semibold text-xs uppercase tracking-wider text-center">Enterprise</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    { feature: "Monthly API calls", free: "1,000", pro: "100,000", enterprise: "Unlimited" },
-                    { feature: "Latency SLA", free: "Best effort", pro: "< 10ms", enterprise: "Custom" },
-                    { feature: "Identity APIs", free: "Basic", pro: "Full suite", enterprise: "Full suite" },
-                    { feature: "Finance APIs", free: "—", pro: "Full suite", enterprise: "Full + custom" },
-                    { feature: "Webhook integrations", free: "—", pro: "✓", enterprise: "✓" },
-                    { feature: "Analytics dashboard", free: "—", pro: "✓", enterprise: "✓" },
-                    { feature: "SOC2 compliance", free: "—", pro: "—", enterprise: "✓" },
-                    { feature: "Dedicated support", free: "Community", pro: "Email (1hr)", enterprise: "24/7 phone" },
+                    { feature: "Monthly API calls", free: "1,000", pro: "100K", growth: "500K", enterprise: "Unlimited" },
+                    { feature: "Latency SLA", free: "Best effort", pro: "< 10ms", growth: "< 10ms", enterprise: "Custom" },
+                    { feature: "Identity APIs", free: "Limited", pro: "Full suite", growth: "Full suite", enterprise: "Full + Custom" },
+                    { feature: "Finance APIs", free: "—", pro: "Full suite", growth: "Full suite", enterprise: "Full + Custom" },
+                    { feature: "Webhooks", free: "✓", pro: "+ Delivery log", growth: "+ Delivery log", enterprise: "✓" },
+                    { feature: "Team Seats", free: "1", pro: "1", growth: "Up to 10", enterprise: "Unlimited" },
+                    { feature: "Analytics Dashboard", free: "—", pro: "✓", growth: "✓", enterprise: "✓" },
+                    { feature: "SOC2 Compliance", free: "—", pro: "—", growth: "—", enterprise: "✓" },
+                    { feature: "Dedicated Support", free: "Community", pro: "Email (1hr)", growth: "Priority (30m)", enterprise: "24/7 Phone/Slack" },
                   ].map((row, i) => (
                     <tr key={i} className="border-b border-white/5 last:border-b-0 hover:bg-white/2 transition-colors duration-150">
                       <td className="py-3.5 px-6 text-neutral-300 font-medium">{row.feature}</td>
                       <td className="py-3.5 px-6 text-neutral-500 text-center text-xs">{row.free}</td>
-                      <td className="py-3.5 px-6 text-emerald-400 text-center text-xs font-semibold">{row.pro}</td>
+                      <td className="py-3.5 px-6 text-neutral-400 text-center text-xs">{row.pro}</td>
+                      <td className="py-3.5 px-6 text-emerald-400 text-center text-xs font-semibold">{row.growth}</td>
                       <td className="py-3.5 px-6 text-neutral-400 text-center text-xs">{row.enterprise}</td>
                     </tr>
                   ))}

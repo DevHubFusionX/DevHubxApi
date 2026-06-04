@@ -127,37 +127,6 @@ const TerminalConsole = memo(function TerminalConsole() {
   );
 });
 
-// ─── Quick Links ───
-const quickLinks = [
-  {
-    label: "Read docs",
-    href: "#docs",
-    icon: (
-      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
-  },
-  {
-    label: "Pricing",
-    href: "#pricing",
-    icon: (
-      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
-      </svg>
-    ),
-  },
-  {
-    label: "API catalog",
-    href: "#apis",
-    icon: (
-      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-    ),
-  },
-];
-
 // ─── Hero (default export) ───
 export default memo(function Hero() {
   return (
@@ -176,49 +145,43 @@ export default memo(function Hero() {
 
         {/* ── Headline Row ── */}
         <FadeUp delay={0.05}>
-          <div className="text-center mb-10">
+          <div className="text-center mb-8 max-w-4xl mx-auto">
             {/* One-liner */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-extrabold tracking-tight text-white leading-[1.12] mb-4">
-              One API for payments, identity
-              <br className="hidden sm:block" />
-              <span className="text-brand-green">&nbsp;& infrastructure</span> across Africa
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[3.8rem] font-extrabold tracking-tight text-white leading-[1.1] mb-6">
+              Stop maintaining <span className="text-brand-green">12 separate integrations</span>.
             </h1>
 
-            <p className="text-neutral-400 text-base sm:text-lg font-medium max-w-2xl mx-auto leading-relaxed">
-              Proxy, aggregate, and orchestrate 40+ regional APIs through a single RESTful endpoint.
-              <br className="hidden sm:block" />
-              Ship in minutes, not months.
+            <p className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-200 mb-6 leading-snug max-w-3xl mx-auto">
+              One key for NIN, BVN, mobile money, and logistics across Africa.
+            </p>
+
+            <p className="text-neutral-400 text-sm sm:text-base md:text-lg font-medium max-w-3xl mx-auto leading-relaxed">
+              Most African fintechs wire together NIMC, NIBSS, MTN MoMo, Airtel, Flutterwave, and 7 others by hand — each with its own auth, schema, and rate limit. DevhubxAPI normalises all of them into a single endpoint so your team ships features, not plumbing.
             </p>
           </div>
         </FadeUp>
 
         {/* ── CTA Row ── */}
         <FadeUp delay={0.2}>
-          <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 w-full">
             <button
               id="hero-get-api-key"
               onClick={() => openAuthModal("signup")}
-              className="group px-7 py-3 rounded-lg text-sm font-bold text-neutral-950 bg-brand-green hover:bg-emerald-400 shadow-lg shadow-emerald-500/15 hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+              className="w-full sm:w-auto group px-8 py-3.5 rounded-lg text-sm font-bold text-neutral-950 bg-brand-green hover:bg-emerald-400 shadow-lg shadow-emerald-500/15 hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2"
             >
-              Get API key
+              Get API key — free
               <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </button>
 
-            {/* Quick links */}
-            <div className="flex items-center gap-1">
-              {quickLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-neutral-400 hover:text-white hover:bg-white/[0.04] transition-all duration-200"
-                >
-                  {link.icon}
-                  {link.label}
-                </a>
-              ))}
-            </div>
+            <a
+              href="#playground"
+              className="w-full sm:w-auto group px-8 py-3.5 rounded-lg text-sm font-bold text-neutral-300 bg-white/4 border border-white/8 hover:text-white hover:bg-white/8 hover:border-white/15 transition-all duration-200 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+            >
+              See live playground
+              <span className="transition-transform group-hover:translate-x-0.5">→</span>
+            </a>
           </div>
         </FadeUp>
 
@@ -229,25 +192,29 @@ export default memo(function Hero() {
           </div>
         </FadeUp>
 
-        {/* ── Trust Strip ── */}
-        <FadeUp delay={0.55}>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] font-mono text-neutral-500">
-            <div className="flex items-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-brand-green/60" />
-              <span><span className="text-neutral-300 font-semibold">3.2ms</span> avg latency</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-brand-green/60" />
-              <span><span className="text-neutral-300 font-semibold">99.98%</span> uptime SLA</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-brand-green/60" />
-              <span><span className="text-neutral-300 font-semibold">1,000</span> free reqs/mo</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-brand-green/60" />
-              <span>SOC 2 compliant</span>
-            </div>
+        {/* ── Metrics Grid ── */}
+        <FadeUp delay={0.5}>
+          <div className="w-full max-w-4xl mx-auto mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {[
+              { value: "2,847,291", label: "API calls this month" },
+              { value: "4.2ms", label: "avg gateway latency" },
+              { value: "99.98%", label: "uptime, last 90 days" },
+              { value: "40+", label: "regional APIs unified" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="relative overflow-hidden rounded-xl border border-white/6 bg-white/2 p-5 text-center backdrop-blur-sm transition-all duration-300 hover:border-brand-green/30 hover:bg-white/4"
+              >
+                {/* Accent line on hover */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-linear-to-r from-transparent via-brand-green/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-neutral-500">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
         </FadeUp>
 

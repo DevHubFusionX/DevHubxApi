@@ -2,101 +2,44 @@
 
 import React, { memo } from "react";
 
-// Mock desaturated SVGs for recognizable tech companies
-const logos = [
-  {
-    name: "Stripe",
-    svg: (
-      <svg width={56} height={24} className="fill-current" viewBox="0 0 80 34" xmlns="http://www.w3.org/2000/svg">
-        <path d="M72.3 14.2c0-5.5-2.7-8.7-7.6-8.7-4.9 0-8.1 3.5-8.1 8.8 0 6.6 4.3 8.3 8.3 8.3 1.8 0 3.8-.4 5.3-1.1v-3.7c-1.4.6-3 .9-4.7.9-2.1 0-4.3-.6-4.6-2.9h11.2c.1-.6.2-1 .2-1.6zm-11.2-1.7c0-1.8 1.2-3.1 3.1-3.1 1.8 0 3 .9 3.1 3.1h-6.2zm-9.3-7v4.6c-1-.9-2.6-1.5-4.4-1.5-3.8 0-6.8 3.2-6.8 8.7 0 5.6 2.9 8.7 6.8 8.7 1.9 0 3.4-.7 4.4-1.6V32h4.5V5.5h-4.5zm-4.3 13.5c-2.4 0-4.1-1.6-4.1-4.8s1.7-4.8 4.1-4.8c2.3 0 4 1.7 4 4.8 0 3.2-1.7 4.8-4 4.8zm-11.8-6.1c.3-4.3-2.3-7.4-6.8-7.4-4.5 0-7.8 3-7.8 8.8 0 6.3 3.9 8.2 8 8.2 2 0 4-.5 5.5-1.2v-3.7c-1.4.6-3 .9-4.7.9-2 0-4.2-.7-4.4-2.8h10c0-.8.2-2 .2-2.8zm-10.2-1.7c0-1.8 1.2-3.1 3.1-3.1 1.8 0 3 .9 3.1 3.1h-6.2zm-8.8-5.7c-1 0-1.8.3-2.3.8V.2H12v23.8h4.5v-10c0-3.6 2-5.1 4.8-5.1.5 0 .9.1 1.3.2V5.6c-.6-.1-1.1-.1-1.6-.1zm-10 1.9c0-1.1-.9-2.1-2.1-2.1H0v3.8h4.5v11.9c0 3.7 2.9 6.2 6.6 6.2 1.9 0 3.5-.5 4.5-1v-3.7c-.8.4-2 .7-3.1.7-1.9 0-3.5-1.1-3.5-3.5V7.7z" />
-      </svg>
-    ),
-  },
-  {
-    name: "Vercel",
-    svg: (
-      <svg width={89} height={20} className="fill-current" viewBox="0 0 116 26" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12.2 2.5L24.4 23.6H0L12.2 2.5zM42.7 23.6h-5.2V6.3h-6.3V2h17.9v4.3h-6.4v17.3zM59.3 23.6h-4.8V6.3H49V2h15.2v4.3h-4.9v17.3zm20.8 0h-4.9v-9.3c0-2.4-.7-3.8-2.6-3.8-1.8 0-2.9 1.2-2.9 3.8v9.3h-4.9V2.1h4.9v2.7c1-1.9 2.9-3.2 5.5-3.2 4.1 0 4.9 2.5 4.9 6.1v15.9zm13.1-8.5c0 3.3.9 4.8 2.8 4.8 1.9 0 2.8-1.5 2.8-4.8V2.1h4.9v13c0 6-3.3 9-7.7 9-4.4 0-7.7-3-7.7-9V2.1h4.9v13zm22.8 8.5h-4.9V2.1h4.9v21.5z" />
-      </svg>
-    ),
-  },
-  {
-    name: "GitHub",
-    svg: (
-      <svg width={83} height={24} className="fill-current" viewBox="0 0 90 26" xmlns="http://www.w3.org/2000/svg">
-        <path d="M11 0C4.9 0 0 4.9 0 11c0 4.9 3.2 9 7.6 10.5.6.1.8-.2.8-.5v-2.1c-3.1.7-3.7-1.5-3.7-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 1.7 2.6 1.2 3.2.9.1-.7.4-1.2.7-1.5-2.5-.3-5.1-1.2-5.1-5.5 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-3 0 0 .9-.3 3 1.1A10.3 10.3 0 0111 5c.9 0 1.9.1 2.8.4 2.1-1.4 3-1.1 3-1.1.6 1.6.2 2.7.1 3 .7.8 1.1 1.8 1.1 3 0 4.3-2.6 5.2-5.1 5.5.4.3.8 1 .8 2.1v3.1c0 .3.2.7.8.5C18.8 20 22 15.9 22 11c0-6.1-4.9-11-11-11zm19.8 15.6c0 1.3-.4 2.3-1.1 3-.7.7-1.7 1.1-2.9 1.1-1.2 0-2.2-.4-2.9-1.1-.7-.7-1.1-1.7-1.1-3v-7h2.2v7c0 1.6.7 2.4 2.1 2.4s2.1-.8 2.1-2.4v-7h2.2v7.1v-.1zm8.2.1c0 1.1-.3 2.1-.9 2.8-.6.7-1.5 1.1-2.6 1.1-1.3 0-2.3-.5-2.9-1.5v1.3H32V5.7h2.2v5c.6-1 1.6-1.5 2.9-1.5 1.1 0 2 .4 2.6 1.1.6.7.9 1.7.9 2.8v2.6zm-2.2-2.5c0-1.4-.5-2.1-1.6-2.1s-1.7.7-1.7 2.1v2.3c0 1.4.5 2.1 1.7 2.1s1.6-.7 1.6-2.1v-2.3zm13.1-4.9v2.2h-2.9v5c0 1 .4 1.5 1.2 1.5.4 0 .8-.1 1.2-.2v2c-.6.3-1.4.4-2.2.4-1 0-1.8-.3-2.3-1-.5-.6-.7-1.6-.7-2.9v-4.8H44v-2.2h2.2V7.1h2.2v2.2h3.5v-.1zm8.3 9.7c0 1.3-.4 2.3-1.1 3-.7.7-1.7 1.1-2.9 1.1-1.2 0-2.2-.4-2.9-1.1-.7-.7-1.1-1.7-1.1-3v-7h2.2v7c0 1.6.7 2.4 2.1 2.4s2.1-.8 2.1-2.4v-7h2.2v7.1v-.1zm10.7-7.4c.9 0 1.6.4 2.1 1.1.5.7.8 1.7.8 2.8v2.6c0 1.1-.3 2.1-.9 2.8-.6.7-1.5 1.1-2.6 1.1-1.3 0-2.3-.5-2.9-1.5v1.3h-2.2V5.7h2.2v5c.6-1 1.6-1.5 2.9-1.5v-.1zm-2.2 4.9c0 1.4.5 2.1 1.6 2.1s1.7-.7 1.7-2.1v-2.3c0-1.4-.5-2.1-1.7-2.1s-1.6.7-1.6 2.1v2.3zm11.7.5c0 1.6.7 2.4 2.1 2.4s2.1-.8 2.1-2.4v-7h2.2v7c0 1.3-.4 2.3-1.1 3-.7.7-1.7 1.1-2.9 1.1-1.2 0-2.2-.4-2.9-1.1-.7-.7-1.1-1.7-1.1-3V5.7h2.2v7.1z" />
-      </svg>
-    ),
-  },
-  {
-    name: "Supabase",
-    svg: (
-      <svg width={100} height={20} className="fill-current" viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10.8 0L1.2 12.8c-.4.5-.1 1.2.6 1.2h8.4L8.4 24l9.6-12.8c.4-.5.1-1.2-.6-1.2h-8.4L10.8 0zM35.6 17.6c0 3.3.9 4.8 2.8 4.8 1.9 0 2.8-1.5 2.8-4.8V6.2h4.9v13c0 6-3.3 9-7.7 9-4.4 0-7.7-3-7.7-9V6.2h4.9v11.4zm16.5-5.2v9.3h-4.9V6.2h4.9v2.7c1-1.9 2.9-3.2 5.5-3.2 4.1 0 4.9 2.5 4.9 6.1v9.8h-4.9v-9.3c0-2.4-.7-3.8-2.6-3.8-1.8 0-2.9 1.2-2.9 3.8zm19.8.9c0 1.1-.3 2.1-.9 2.8-.6.7-1.5 1.1-2.6 1.1-1.3 0-2.3-.5-2.9-1.5v1.3h-2.2V6.2h2.2v5c.6-1 1.6-1.5 2.9-1.5 1.1 0 2 .4 2.6 1.1.6.7.9 1.7.9 2.8v2.6v-.2zm-2.2-2.5c0-1.4-.5-2.1-1.6-2.1s-1.7.7-1.7 2.1v2.3c0 1.4.5 2.1 1.7 2.1s1.6-.7 1.6-2.1v-2.3zm13.1-4.9v2.2h-2.9v5c0 1 .4 1.5 1.2 1.5.4 0 .8-.1 1.2-.2v2c-.6.3-1.4.4-2.2.4-1 0-1.8-.3-2.3-1-.5-.6-.7-1.6-.7-2.9V6.2H80v-2.2h2.2V1.2h2.2v2.8h3.5v-.1zm8.3 9.7c0 1.3-.4 2.3-1.1 3-.7.7-1.7 1.1-2.9 1.1-1.2 0-2.2-.4-2.9-1.1-.7-.7-1.1-1.7-1.1-3V6.2h2.2v7c0 1.6.7 2.4 2.1 2.4s2.1-.8 2.1-2.4V6.2h2.2v9.8h-.1z" />
-      </svg>
-    ),
-  },
-  {
-    name: "Amazon AWS",
-    svg: (
-      <svg width={64} height={24} className="fill-current" viewBox="0 0 64 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12.6 5.8c-1.3 0-2.4.4-3.2 1-.5.4-.8.9-1 1.4V6h-2.5v12.2H8.4V9.6c.6-.7 1.4-1.1 2.4-1.1 1.7 0 2.5 1 2.5 2.8v6.9h2.5v-7.3c0-3.3-1.6-5.1-4.8-5.1zm12.9 0c-1.3 0-2.4.4-3.2 1-.5.4-.8.9-1 1.4V6h-2.5v12.2h2.5V9.6c.6-.7 1.4-1.1 2.4-1.1 1.7 0 2.5 1 2.5 2.8v6.9h2.5v-7.3c0-3.3-1.6-5.1-4.8-5.1zm15.7 0c-1.6 0-3 .7-3.7 1.8-.8-1.1-2.1-1.8-3.7-1.8-1.3 0-2.4.4-3.2 1-.5.4-.8.9-1 1.4V6H27v12.2h2.5V9.6c.6-.7 1.4-1.1 2.4-1.1 1.6 0 2.4 1 2.4 2.8v6.9h2.5V9.6c.6-.7 1.4-1.1 2.4-1.1 1.6 0 2.4 1 2.4 2.8v6.9h2.5V9.6c0-3.8-2-5.8-5.8-5.8zm11.3 0c-3 0-5 2-5 5v2.2c0 3 2 5 5 5s5-2 5-5v-2.2c0-3-2-5-5-5zm2.5 7.2c0 1.9-1 3.1-2.5 3.1s-2.5-1.2-2.5-3.1v-2.2c0-1.9 1-3.1 2.5-3.1s2.5 1.2 2.5 3.1v2.2z" />
-      </svg>
-    ),
-  },
-  {
-    name: "Prisma",
-    svg: (
-      <svg width={85} height={24} className="fill-current" viewBox="0 0 85 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9.8 1.3L.7 16.9c-.8 1.4.2 3.1 1.8 3.1h18.2c1.6 0 2.6-1.7 1.8-3.1L13.4 1.3c-.8-1.4-2.8-1.4-3.6 0zm20.8 11.2h5v9.3h-5V5.5h5v7zm16.5-5.2v9.3h-4.9V5.5h4.9v2.7c1-1.9 2.9-3.2 5.5-3.2 4.1 0 4.9 2.5 4.9 6.1v9.8H60v-9.3c0-2.4-.7-3.8-2.6-3.8-1.8 0-2.9 1.2-2.9 3.8zm19.8.9c0 1.1-.3 2.1-.9 2.8-.6.7-1.5 1.1-2.6 1.1-1.3 0-2.3-.5-2.9-1.5v1.3h-2.2V5.5h2.2v5c.6-1 1.6-1.5 2.9-1.5 1.1 0 2 .4 2.6 1.1.6.7.9 1.7.9 2.8v2.6v-.2zm-2.2-2.5c0-1.4-.5-2.1-1.6-2.1s-1.7.7-1.7 2.1v2.3c0 1.4.5 2.1 1.7 2.1s1.6-.7 1.6-2.1v-2.3z" />
-      </svg>
-    ),
-  },
+const companies = [
+  { name: "Brass", isSpecial: false },
+  { name: "PesaFlow", isSpecial: false },
+  { name: "Shuttlers", isSpecial: false },
+  { name: "Kippa", isSpecial: false },
+  { name: "Vanguard Tech", isSpecial: false },
+  { name: "+ your company", isSpecial: true },
 ];
-
 
 export default memo(function TrustStrip() {
   return (
-    <section className="bg-white py-10 overflow-hidden select-none">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
+    <section className="bg-black py-12 border-y border-white/5 select-none overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row md:items-center justify-between gap-8">
         
         {/* Label */}
-        <div className="shrink-0 text-sm font-semibold tracking-wider uppercase text-neutral-400 font-sans">
-          Trusted by developers at
+        <div className="shrink-0 flex flex-col gap-1 text-left md:max-w-xs">
+          <div className="text-xs font-bold uppercase tracking-wider text-brand-green">
+            Trusted by developers at
+          </div>
+          <div className="text-sm font-semibold text-neutral-400">
+            Companies currently using DevhubxAPI in production
+          </div>
         </div>
 
-        {/* Scrolling Logo Container */}
-        <div className="w-full overflow-hidden relative">
-          {/* Faders/Gradients to hide left/right borders for smooth scroll transition */}
-          <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-          {/* Scrolling Marquee Wrapper */}
-          <div className="animate-marquee gap-16 items-center">
-            
-            {/* First Set of Logos */}
-            {logos.map((logo, index) => (
-              <div 
-                key={`logo-first-${index}`} 
-                className="text-neutral-300 hover:text-neutral-600 transition-colors duration-200"
-                title={logo.name}
-              >
-                {logo.svg}
-              </div>
-            ))}
-
-            {/* Second Duplicate Set of Logos (for seamless looping) */}
-            {logos.map((logo, index) => (
-              <div 
-                key={`logo-second-${index}`} 
-                className="text-neutral-300 hover:text-neutral-600 transition-colors duration-200"
-                title={logo.name}
-              >
-                {logo.svg}
-              </div>
-            ))}
-          </div>
-
+        {/* Flex Wrap List of Companies */}
+        <div className="flex flex-wrap items-center gap-3">
+          {companies.map((company) => (
+            <div
+              key={company.name}
+              className={`px-5 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-all duration-200 ${
+                company.isSpecial
+                  ? "border border-dashed border-white/10 text-neutral-500 hover:border-brand-green/30 hover:text-brand-green cursor-pointer"
+                  : "bg-white/2 border border-white/5 text-neutral-300 hover:border-white/15 hover:text-white"
+              }`}
+            >
+              {company.name}
+            </div>
+          ))}
         </div>
 
       </div>

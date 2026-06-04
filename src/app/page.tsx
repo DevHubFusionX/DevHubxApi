@@ -4,10 +4,9 @@ import TrustStrip from "@/components/landing/TrustStrip";
 import Features from "@/components/landing/Features";
 import ApiCatalog from "@/components/landing/ApiCatalog";
 import HowItWorks from "@/components/landing/HowItWorks";
-import ApiDemo from "@/components/landing/ApiDemo";
 import Pricing from "@/components/landing/Pricing";
-import CodeShowcase from "@/components/landing/CodeShowcase";
 import Testimonials from "@/components/landing/Testimonials";
+import Changelog from "@/components/landing/Changelog";
 import Faq from "@/components/landing/Faq";
 import Cta from "@/components/landing/Cta";
 import Footer from "@/components/landing/Footer";
@@ -23,10 +22,9 @@ export default function Home() {
         <Features />
         <ApiCatalog />
         <HowItWorks />
-        <ApiDemo />
         <Pricing />
-        <CodeShowcase />
         <Testimonials />
+        <Changelog />
         <Faq />
         <Cta />
       </main>
